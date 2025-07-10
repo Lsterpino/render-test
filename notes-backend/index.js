@@ -13,7 +13,7 @@ const requestLogger = (request, response, next) => {
 };
 app.use(express.json());
 app.use(requestLogger);
-
+app.use(express.static("dist"));
 let notes = [
   {
     id: 1,
@@ -78,6 +78,13 @@ app.post("/api/notes", (request, response) => {
 
   notes = notes.concat(note);
   response.json(note);
+});
+
+app.put("/api/notes/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const changedNote = request.body;
+  notes = notes.map((note) => (note.id !== id ? note : changedNote));
+  return response.json(changedNote);
 });
 
 const unknownEndpoint = (request, response) => {
